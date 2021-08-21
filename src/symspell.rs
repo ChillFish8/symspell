@@ -1,17 +1,17 @@
 use std::cmp;
-use std::collections::hash_map::DefaultHasher;
-use std::collections::HashMap;
-use std::collections::HashSet;
 use std::fs::File;
 use std::hash::{Hash, Hasher};
 use std::i64;
 use std::io::{BufRead, BufReader};
 use std::path::Path;
 
-use composition::Composition;
-use edit_distance::{DistanceAlgorithm, EditDistance};
-use string_strategy::StringStrategy;
-use suggestion::Suggestion;
+use hashbrown::{HashMap, HashSet};
+use ahash::AHasher;
+
+use crate::composition::Composition;
+use crate::edit_distance::{DistanceAlgorithm, EditDistance};
+use crate::string_strategy::StringStrategy;
+use crate::suggestion::Suggestion;
 
 #[derive(Eq, PartialEq, Debug)]
 pub enum Verbosity {
@@ -900,7 +900,7 @@ impl<T: StringStrategy> SymSpell<T> {
     }
 
     fn get_string_hash(&self, s: &str) -> u64 {
-        let mut hasher = DefaultHasher::new();
+        let mut hasher = AHasher::default();
         s.hash(&mut hasher);
         hasher.finish()
     }
@@ -916,7 +916,7 @@ impl<T: StringStrategy> SymSpell<T> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use string_strategy::UnicodeStringStrategy;
+    use crate::string_strategy::UnicodeStringStrategy;
 
     #[test]
     fn test_lookup_compound_overflow() {
