@@ -86,13 +86,13 @@ impl<T: StringStrategy> SymSpell<T> {
         let file = File::open(corpus).expect("file not found");
         let sr = BufReader::new(file);
 
-        for (i, line) in sr.lines().enumerate() {
-            if i % 50_000 == 0 {
-                info!("loading progress: {}", i);
-            }
+        let mut count = 0usize;
+        for line in sr.lines() {
+            count += 1;
             let line_str = line.unwrap();
             self.load_dictionary_line(&line_str, term_index, count_index, separator);
         }
+        info!("loaded {} words for file {}", count, corpus);
         true
     }
 
