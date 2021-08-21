@@ -46,9 +46,9 @@ pub struct SymSpell<T: StringStrategy> {
     #[builder(default = "HashMap::new()", setter(skip))]
     deletes: HashMap<u64, Vec<String>>,
     #[builder(default = "HashMap::new()", setter(skip))]
-    words: HashMap<u64, i64>,
+    words: HashMap<String, i64>,
     #[builder(default = "HashMap::new()", setter(skip))]
-    bigrams: HashMap<u64, i64>,
+    bigrams: HashMap<String, i64>,
     #[builder(default = "i64::MAX", setter(skip))]
     bigram_min_count: i64,
     #[builder(default = "DistanceAlgorithm::Damerau")]
@@ -184,9 +184,7 @@ impl<T: StringStrategy> SymSpell<T> {
             };
             let count = line_parts[count_index as usize].parse::<i64>().unwrap();
 
-            let mut hasher = AHasher::default();
-            hasher.write(key.as_bytes());
-            self.bigrams.insert(hasher.finish(), count);
+            self.bigrams.insert(key, count);
             if count < self.bigram_min_count {
                 self.bigram_min_count = count;
             }
@@ -235,11 +233,8 @@ impl<T: StringStrategy> SymSpell<T> {
         let mut hashset1: HashSet<String> = HashSet::new();
         let mut hashset2: HashSet<String> = HashSet::new();
 
-        let mut hasher = AHasher::default();
-        hasher.write(input.as_bytes());
-        let id = hasher.finish();
-        if self.words.contains_key(&id) {
-            let suggestion_count = self.words[&id];
+        if self.words.contains_key(input) {
+            let suggestion_count = self.words[input];
             suggestions.push(Suggestion::new(input, 0, suggestion_count));
 
             if verbosity != Verbosity::All {
@@ -361,10 +356,7 @@ impl<T: StringStrategy> SymSpell<T> {
                     }
 
                     if distance <= max_edit_distance2 {
-                        let mut hasher = AHasher::default();
-                        hasher.write(suggestion.as_bytes());
-                        let id = hasher.finish();
-                        let suggestion_count = self.words[&id];
+                        let suggestion_count = self.words[suggestion];
                         let si = Suggestion::new(suggestion, distance, suggestion_count);
 
                         if !suggestions.is_empty() {
@@ -545,9 +537,7 @@ impl<T: StringStrategy> SymSpell<T> {
                                     }
                                 }
 
-                                let mut hasher = AHasher::default();
-                                hasher.write(suggestion_split.term.as_bytes());
-                                let count2: i64 = match self.bigrams.get(&hasher.finish()) {
+                                let count2: i64 = match self.bigrams.get(&suggestion_split.term) {
                                     Some(&bigram_frequency) => {
                                         // increase count, if split
                                         // corrections are part of or
@@ -791,21 +781,18 @@ impl<T: StringStrategy> SymSpell<T> {
             return false;
         }
 
-        let mut hasher = AHasher::default();
-        hasher.write(key.as_bytes());
-        let id = hasher.finish();
-        match self.words.get(&id) {
+        match self.words.get(&key) {
             Some(i) => {
                 let updated_count = if i64::MAX - i > count {
                     i + count
                 } else {
                     i64::MAX
                 };
-                self.words.insert(id, updated_count);
+                self.words.insert(key.clone(), updated_count);
                 return false;
             }
             None => {
-                self.words.insert(id, count);
+                self.words.insert(key.clone(), count);
             }
         }
 
