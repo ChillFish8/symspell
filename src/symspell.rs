@@ -237,8 +237,9 @@ impl<T: StringStrategy> SymSpell<T> {
 
         let mut hasher = AHasher::default();
         hasher.write(input.as_bytes());
-        if self.words.contains_key(&hasher.finish()) {
-            let suggestion_count = self.words[input];
+        let id = hasher.finish();
+        if self.words.contains_key(&id) {
+            let suggestion_count = self.words[&id];
             suggestions.push(Suggestion::new(input, 0, suggestion_count));
 
             if verbosity != Verbosity::All {
@@ -360,7 +361,10 @@ impl<T: StringStrategy> SymSpell<T> {
                     }
 
                     if distance <= max_edit_distance2 {
-                        let suggestion_count = self.words[suggestion];
+                        let mut hasher = AHasher::default();
+                        hasher.write(suggestion.as_bytes());
+                        let id = hasher.finish();
+                        let suggestion_count = self.words[&id];
                         let si = Suggestion::new(suggestion, distance, suggestion_count);
 
                         if !suggestions.is_empty() {
@@ -788,7 +792,7 @@ impl<T: StringStrategy> SymSpell<T> {
         }
 
         let mut hasher = AHasher::default();
-        hasher.write(suggestion_split.term.as_bytes());
+        hasher.write(key.as_bytes());
         let id = hasher.finish();
         match self.words.get(&id) {
             Some(i) => {
