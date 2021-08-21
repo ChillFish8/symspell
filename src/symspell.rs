@@ -88,7 +88,7 @@ impl<T: StringStrategy> SymSpell<T> {
 
         for (i, line) in sr.lines().enumerate() {
             if i % 50_000 == 0 {
-                eprintln!("progress: {}", i);
+                info!("loading progress: {}", i);
             }
             let line_str = line.unwrap();
             self.load_dictionary_line(&line_str, term_index, count_index, separator);

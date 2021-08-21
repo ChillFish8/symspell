@@ -19,12 +19,11 @@ let compound_suggestions = symspell.lookup_compound(sentence, 2);
 println!("{:?}", compound_suggestions);
 ```
 */
-extern crate strsim;
 #[macro_use]
 extern crate derive_builder;
 
-#[cfg(not(target_arch = "wasm32"))]
-extern crate unidecode;
+#[macro_use]
+extern crate log;
 
 mod composition;
 mod edit_distance;

@@ -18,4 +18,4 @@ derive_builder = "^0.9"
 hashbrown = "0.11"
 ahash = "0.7"
 unidecode = "^0.3"
-
+log = "0.4"
