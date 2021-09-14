@@ -71,7 +71,7 @@ impl<T: StringStrategy> SymSpell<T> {
     /// * `map` - The map containing the word - count pairs.
     pub fn load_dictionary_from_map(&mut self, map: HashMap<String, u32>) {
         for (key, value) in map {
-            self.create_dictionary_entry(key, value as i64)
+            self.create_dictionary_entry(key, value as i64);
         }
     }
 
