@@ -64,6 +64,17 @@ impl<T: StringStrategy> Default for SymSpell<T> {
 }
 
 impl<T: StringStrategy> SymSpell<T> {
+    /// Load multiple entries from a given HashMap.
+    ///
+    /// # Arguements
+    ///
+    /// * `map` - The map containing the word - count pairs.
+    pub fn load_dictionary_from_map(&mut self, map: HashMap<String, u32>) {
+        for (key, value) in map {
+            self.create_dictionary_entry(key, value as i64)
+        }
+    }
+
     /// Load multiple dictionary entries from a file of word/frequency count pairs.
     ///
     /// # Arguments
