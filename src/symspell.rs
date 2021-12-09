@@ -44,7 +44,7 @@ pub struct SymSpell<T: StringStrategy> {
     #[builder(default = "0", setter(skip))]
     max_length: i64,
     #[builder(default = "HashMap::new()", setter(skip))]
-    deletes: HashMap<u64, Vec<String>>,
+    pub deletes: HashMap<u64, Vec<String>>,
     #[builder(default = "HashMap::new()", setter(skip))]
     words: HashMap<String, i64>,
     #[builder(default = "HashMap::new()", setter(skip))]
