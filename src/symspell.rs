@@ -44,9 +44,9 @@ pub struct SymSpell<T: StringStrategy> {
     #[builder(default = "0", setter(skip))]
     max_length: i64,
     #[builder(default = "HashMap::new()", setter(skip))]
-    deletes: HashMap<u64, Vec<String>>,
+    pub deletes: HashMap<u64, Vec<String>>,
     #[builder(default = "HashMap::new()", setter(skip))]
-    words: HashMap<String, i64>,
+    pub words: HashMap<String, i64>,
     #[builder(default = "HashMap::new()", setter(skip))]
     bigrams: HashMap<String, i64>,
     #[builder(default = "i64::MAX", setter(skip))]
